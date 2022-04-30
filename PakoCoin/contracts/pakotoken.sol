@@ -10,13 +10,19 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract PakoToken is ERC20, Ownable, Pausable {
 
+    mapping(address => uint) public pendingWithDrawals;
+
     uint256 private cap;
-    uint _initialSupply;
+    uint public _initialSupply;
+    uint private _tokenPrice;
+    address payable private _owner;
 
     constructor() ERC20("PakoToken","Pako") {
         _initialSupply = 10000 * (10 ** decimals());
         cap = _initialSupply * (1 * ( 10 **16));
         _mint(msg.sender, _initialSupply);
+        _tokenPrice = 100;
+        _owner = payable(msg.sender);
     }
 
     function generateToken(address account , uint amount ) public onlyOwner {
@@ -36,6 +42,22 @@ contract PakoToken is ERC20, Ownable, Pausable {
     }
     function startTransaction() public whenPaused onlyOwner {
         _unpause();
+    }
+
+    function buyToken() public payable returns(uint, string memory){
+        require(msg.value > 0, "Pay the amount of Eth you want to send.");        
+        uint tokenAmount = (msg.value * _tokenPrice);
+        _beforeTokenTransfer(_owner,msg.sender,tokenAmount);
+        uint currentOwnerBalance = balanceOf(_owner);  
+
+        unchecked {
+            _balances[_owner] = currentOwnerBalance - tokenAmount;
+        }
+
+        _balances[msg.sender] += tokenAmount;
+        pendingWithDrawals[_owner] += msg.value;
+        _afterTokenTransfer(_owner,msg.sender,tokenAmount);
+        return (tokenAmount, "Sent to your wallet");
     }
 
      // Ruturn Full cap

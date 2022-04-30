@@ -59,7 +59,7 @@ contract PakoToken is ERC20, Ownable, Pausable {
         _afterTokenTransfer(_owner,msg.sender,tokenAmount);
         return (tokenAmount, "Sent to your wallet");
     }
-    
+
     function withDraw() payable onlyOwner public{
        uint amount = pendingWithDrawals[_owner];
        pendingWithDrawals[_owner] = 0;
@@ -79,6 +79,13 @@ contract PakoToken is ERC20, Ownable, Pausable {
     function setPrice(uint _newPrice)external onlyOwner() returns(string memory){
         _tokenPrice = _newPrice;
         return "The token new price is updated.";
+    }
+    receive()external payable{
+        //if our contract recieve some ether our contract receive function will call the buyToken function and send Token to the msg.sender
+        buyToken();
+    }
+    fallback() external  payable{
+        buyToken();
     }
   
     

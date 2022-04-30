@@ -59,17 +59,23 @@ contract PakoToken is ERC20, Ownable, Pausable {
         _afterTokenTransfer(_owner,msg.sender,tokenAmount);
         return (tokenAmount, "Sent to your wallet");
     }
+    
     function withDraw() payable onlyOwner public{
        uint amount = pendingWithDrawals[_owner];
        pendingWithDrawals[_owner] = 0;
        payable(_owner).transfer(amount);        
     }
 
+    function pricePerEth()external view returns(uint){
+        return _tokenPrice;
+    }
+
      // Ruturn Full cap
     function getCap() external view returns(uint){
         return cap;
     }
-     // set the price of token 
+    // 3. There should be an additional method to adjust the price that allows the owner to adjust the price.
+    //returns price
     function setPrice(uint _newPrice)external onlyOwner() returns(string memory){
         _tokenPrice = _newPrice;
         return "The token new price is updated.";

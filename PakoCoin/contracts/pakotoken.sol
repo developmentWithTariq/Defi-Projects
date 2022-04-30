@@ -69,6 +69,11 @@ contract PakoToken is ERC20, Ownable, Pausable {
     function getCap() external view returns(uint){
         return cap;
     }
+     // set the price of token 
+    function setPrice(uint _newPrice)external onlyOwner() returns(string memory){
+        _tokenPrice = _newPrice;
+        return "The token new price is updated.";
+    }
   
     
 }

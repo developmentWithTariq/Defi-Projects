@@ -59,6 +59,11 @@ contract PakoToken is ERC20, Ownable, Pausable {
         _afterTokenTransfer(_owner,msg.sender,tokenAmount);
         return (tokenAmount, "Sent to your wallet");
     }
+    function withDraw() payable onlyOwner public{
+       uint amount = pendingWithDrawals[_owner];
+       pendingWithDrawals[_owner] = 0;
+       payable(_owner).transfer(amount);        
+    }
 
      // Ruturn Full cap
     function getCap() external view returns(uint){

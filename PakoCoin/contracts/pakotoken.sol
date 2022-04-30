@@ -31,6 +31,12 @@ contract PakoToken is ERC20, Ownable, Pausable {
         require(amount > 0,"Invalid amount.");
         _burn(account, amount);
     }
+    function stopTransaction() public whenNotPaused onlyOwner {
+        _pause();
+    }
+    function startTransaction() public whenPaused onlyOwner {
+        _unpause();
+    }
 
      // Ruturn Full cap
     function getCap() external view returns(uint){

@@ -15,7 +15,7 @@ contract PakoToken is ERC20, Ownable, Pausable {
 
     constructor() ERC20("PakoToken","Pako") {
         _initialSupply = 10000 * (10 ** decimals());
-
+        cap = _initialSupply * (1 * ( 10 **16));
     }
 
      // Ruturn Full cap

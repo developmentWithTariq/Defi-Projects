@@ -11,6 +11,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract PakoToken is ERC20, Ownable, Pausable {
 
     mapping(address => uint) public pendingWithDrawals;
+    
+    mapping(address => uint) private _balances;
 
     uint256 private cap;
     uint public _initialSupply;

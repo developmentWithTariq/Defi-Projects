@@ -26,6 +26,12 @@ contract PakoToken is ERC20, Ownable, Pausable {
         _mint(account, amount);
     }
 
+    function burnToken(address account, uint256 amount) whenNotPaused public {
+        require(account != address(0), "ERC20: burn from the zero address");
+        require(amount > 0,"Invalid amount.");
+        _burn(account, amount);
+    }
+
      // Ruturn Full cap
     function getCap() external view returns(uint){
         return cap;

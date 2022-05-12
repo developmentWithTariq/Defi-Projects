@@ -24,6 +24,34 @@ describe("CrowdSale of Pako token", function () {
       
       
     });
+    it("Buy token", async function () {
+      [owner, addr1, addr2] = await ethers.getSigners();        
+      const TokenContract = await ethers.getContractFactory("PakoToken");
+      const tokenContract = await TokenContract.deploy();
+      await tokenContract.deployed();
+
+      const CrowdSaleToken = await ethers.getContractFactory("CrowdSale");
+      const crowdSaleToken = await CrowdSaleToken.deploy(tokenContract.address, tokenPrice);
+      await crowdSaleToken.deployed();      
+      // Provision 75% of all tokens to the token sale
+      let availableBlance = ethers.utils.parseUnits("75000") ;
+      let transaction =  await tokenContract.transfer(crowdSaleToken.address,availableBlance)
+      
+      if (transaction) {
+        //balance of CrowdSaleContract before transaction
+        expect((await tokenContract.balanceOf(crowdSaleToken.address)).toString()).to.equal(availableBlance)
+        
+        expect((await tokenContract.balanceOf(addr1.address)).toString()).to.equal("0")
+
+        let receipt = await crowdSaleToken.connect(addr1).buyTokens({value: ethers.utils.parseEther('1')})
+
+        let addr1Balance = (await tokenContract.balanceOf(addr1.address)).toString()        
+        //balance of addr1 before token purchase
+        expect( addr1Balance ).to.equal((ethers.utils.parseUnits(tokenPrice.toString()).toString()),"triggers one event")
+        //balance of CrowdSaleContract before transaction
+        expect((await tokenContract.balanceOf(crowdSaleToken.address)).toString()).to.equal(ethers.utils.parseUnits("74900") )          
+      }      
+    });
     
     
   });

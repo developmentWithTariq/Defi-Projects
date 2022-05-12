@@ -38,6 +38,18 @@ contract CrowdSale is Ownable{
     }
     
 
+    function endSale() public payable {
+        require(msg.sender == admin,"Only Owner can end CrowdSale");        
+
+        //send ethers to admin
+        uint amount = pendingWithDrawals[admin];
+        pendingWithDrawals[admin] = 0;
+        tokenContract.transfer(admin, tokenContract.balanceOf(address(this)));
+
+        payable(admin).transfer(amount);                     
+    }
+
+
     fallback() external payable {
         buyTokens();
     }

@@ -5,13 +5,16 @@
 // Runtime Environment's members available in the global scope.
 import { ethers } from "hardhat";
 import abi from  "./PakoToken.json";
+import * as dotenv from "dotenv";
+
 let contractAbi = abi.abi;
 
 async function main() {
   const [owner, addr1, addr2 ] = await ethers.getSigners()
   const PakoToken = await ethers.getContractFactory("PakoToken");  
-  const pakoToken = await PakoToken.attach("0x664a5aCf2acAa8bbc9F7302E4EC933A5E19E1d95");
-  // await pakoToken.deployed();
+  const pakoToken = await PakoToken.deploy();
+  // const pakoToken = await PakoToken.attach("0x664a5aCf2acAa8bbc9F7302E4EC933A5E19E1d95");
+  await pakoToken.deployed();
 
   console.log("Greeter deployed to:", pakoToken.address);
   //balance of owenr
@@ -20,8 +23,20 @@ async function main() {
   //initial Supply 
   const initialSupply= await pakoToken._initialSupply();
   console.log("initial Supply", initialSupply);  
+  
+  
+  const CrowdSale = await ethers.getContractFactory("MultiSigCrowdSale");  
+  const crowdSale = await CrowdSale.deploy(pakoToken.address, 100);
+  await crowdSale.deployed();
+  console.log("CrowdSale contract address ",crowdSale.address)
+
+  const transferBalance = ethers.utils.parseUnits("75000") ;
+
+  let transaction =  await pakoToken.transfer(crowdSale.address,transferBalance)
+      
 
 
+/*
 function send_token(contract_address:any,
   send_token_amount:any,
   to_address:any,
@@ -78,11 +93,12 @@ function send_token(contract_address:any,
   }}
   })
 }
-  
-let private_key ="6932f4e79184aba14c86fbb36df27ecfdf5030d2a0f086894dc4c1f6dca07e2b"
+dotenv.config();
+
+let private_key = "6932f4e79184aba14c86fbb36df27ecfdf5030d2a0f086894dc4c1f6dca07e2b"// private key process.env.PRIVATE_KEY;
 let send_token_amount = "1"
-let to_address = "0x12bD0171aF61eF6d9B46935DC0067d38CF1Be662";
-let send_address = "0xDdF1303c0d6aefa77d28eaDB5aa5835bdB445bA7";
+let to_address = "0x12bD0171aF61eF6d9B46935DC0067d38CF1Be662"; // second  account
+let send_address = "0xDdF1303c0d6aefa77d28eaDB5aa5835bdB445bA7"; //first account
 let gas_limit = "0x100000"
 let wallet = new ethers.Wallet(private_key)
 let walletSigner = wallet.connect(ethers.provider)
@@ -96,6 +112,7 @@ send_token(
 	send_address,
 	private_key
 	)
+  */
 
 }
 

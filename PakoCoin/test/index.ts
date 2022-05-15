@@ -2,10 +2,12 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 describe("Pako token", function () {
-  let owner:any, addr1:any,addr2:any, PakoToken, pakoToken;
+  // let owner:any, addr1:any,addr2:any, PakoToken, pakoToken;
+
   
   describe("IERC20Metadata TEST", function () {
-    let owner:any, addr1:any,addr2:any, PakoToken, pakoToken;
+    let owner:any, addr1:any,addr2:any;
+    
     it("Should return name of Token as Pako Token", async function () {
       [owner, addr1, addr2] = await ethers.getSigners();
       // const cont = await new ERC20__factory(owner).deploy();
@@ -53,15 +55,17 @@ describe("Pako token", function () {
       expect(await decimals).to.equal(18);      
     });        
   });
-  describe("Pako ", function () {
+  describe("Pako Test Erc20", function () {
+    let owner:any, addr1:any,addr2:any;
     it("Should assign initial supply to Owner", async function () {
+      [owner, addr1, addr2] = await ethers.getSigners();
       const PakoToken = await ethers.getContractFactory("PakoToken");
       const pakoToken = await PakoToken.deploy();
       await pakoToken.deployed();
       const _owner  = await pakoToken.owner();
       
       const balanceOfOwner = await pakoToken.balanceOf(owner.address);
-      expect(await balanceOfOwner.toString()).to.equal(await pakoToken._initialSupply());
+      expect(balanceOfOwner.toString()).to.equal(await pakoToken._initialSupply());
     });
     it("Should revert transaction with error of Insufficient balance",async ()=>{
       const PakoToken = await ethers.getContractFactory("PakoToken");
@@ -93,58 +97,42 @@ describe("Pako token", function () {
       }
       
     })
-    it("Should return currect balance of addr1 and addr2",async ()=>{
-      const PakoToken = await ethers.getContractFactory("PakoToken");
-      const pakoToken = await PakoToken.deploy();
-      await pakoToken.deployed();
+   
+    // it("Address1 Should have allawance after aprove some ",async ()=>{
+    //   const PakoToken = await ethers.getContractFactory("PakoToken");
+    //   const pakoToken = await PakoToken.deploy();
+    //   await pakoToken.deployed();
       
-      let beforeBalanceOfAddr1 = await pakoToken.balanceOf(addr1.address);
-      let beforeBalanceOfOwner = await pakoToken.balanceOf(owner.address);
-      expect(beforeBalanceOfAddr1.toString()).to.equal("0");
-      let transfer = await pakoToken.transfer(addr1.address,100);
-      if (transfer){
-        let afterBalanceOfAddr1 = await pakoToken.balanceOf(addr1.address);  
-        expect(await pakoToken.balanceOf(addr1.address)).to.equal(100);
-        // expect( (await pakoToken.balanceOf(owner.address)).toNumber()/18).to.equal((beforeBalanceOfOwner.toNumber()/18) - (afterBalanceOfAddr1.toNumber()/18));  
-      }
+    //   let beforeAllowance = await pakoToken.allowance(owner.address,addr1.address);
+    //   expect(beforeAllowance).to.equal(0);
+    //   let approve = await pakoToken.approve(addr1.address,50);
+    //   if (approve){
+    //     let afterAllowance = await pakoToken.allowance(owner.address,addr1.address);
+    //     expect(afterAllowance).to.equal(50);
+    //   }
+    // })
+    // it("Address1 should transfer from owner account to address2 ",async ()=>{
+    //   const PakoToken = await ethers.getContractFactory("PakoToken");
+    //   const pakoToken = await PakoToken.deploy();
+    //   await pakoToken.deployed();
       
-    })
+    //   let beforeAllowance = await pakoToken.allowance(owner.address,addr1.address);
+    //   expect(beforeAllowance).to.equal(0);
 
-    it("Address1 Should have allawance after aprove some ",async ()=>{
-      const PakoToken = await ethers.getContractFactory("PakoToken");
-      const pakoToken = await PakoToken.deploy();
-      await pakoToken.deployed();
-      
-      let beforeAllowance = await pakoToken.allowance(owner.address,addr1.address);
-      expect(beforeAllowance).to.equal(0);
-      let approve = await pakoToken.approve(addr1.address,50);
-      if (approve){
-        let afterAllowance = await pakoToken.allowance(owner.address,addr1.address);
-        expect(afterAllowance).to.equal(50);
-      }
-    })
-    it("Address1 should transfer from owner account to address2 ",async ()=>{
-      const PakoToken = await ethers.getContractFactory("PakoToken");
-      const pakoToken = await PakoToken.deploy();
-      await pakoToken.deployed();
-      
-      let beforeAllowance = await pakoToken.allowance(owner.address,addr1.address);
-      expect(beforeAllowance).to.equal(0);
+    //   let approve = await pakoToken.approve(addr1.address,50);
+    //   if (approve){
+    //     let afterAllowance = await pakoToken.allowance(owner.address,addr1.address);
+    //     expect(afterAllowance).to.equal(50);
 
-      let approve = await pakoToken.approve(addr1.address,50);
-      if (approve){
-        let afterAllowance = await pakoToken.allowance(owner.address,addr1.address);
-        expect(afterAllowance).to.equal(50);
+    //     let addr2BalanceBefore = await pakoToken.balanceOf(addr2.address);
+    //     expect(addr2BalanceBefore).to.equal(0);
 
-        let addr2BalanceBefore = await pakoToken.balanceOf(addr2.address);
-        expect(addr2BalanceBefore).to.equal(0);
-
-        const transferFrom = await pakoToken.connect(addr1).transferFrom(owner.address,addr2.address,30);
-        expect(await pakoToken.allowance(owner.address,addr1.address)).to.equal(20);
-        expect(await pakoToken.balanceOf(addr2.address)).to.equal(30,"30");        
-      }
-    })
-    it("Allowance to address2 should increase  ",async ()=>{
+    //     const transferFrom = await pakoToken.connect(addr1).transferFrom(owner.address,addr2.address,30);
+    //     expect(await pakoToken.allowance(owner.address,addr1.address)).to.equal(20);
+    //     expect(await pakoToken.balanceOf(addr2.address)).to.equal(30,"30");        
+    //   }
+    // })
+    it("Address1 should transfer from owner account to address2 and increase the Allowance of address1",async ()=>{
       const PakoToken = await ethers.getContractFactory("PakoToken");
       const pakoToken = await PakoToken.deploy();
       await pakoToken.deployed();
@@ -168,99 +156,104 @@ describe("Pako token", function () {
         expect(await pakoToken.allowance(owner.address,addr1.address)).to.equal(100);
       }
     });
-    it("Allowance to address2 Should decreased ",async ()=>{
+    it("Allowance to address1 Should decreased ",async ()=>{
       const PakoToken = await ethers.getContractFactory("PakoToken");
       const pakoToken = await PakoToken.deploy();
       await pakoToken.deployed();
       
       let beforeAllowance = await pakoToken.allowance(owner.address,addr1.address);
-      expect(beforeAllowance).to.equal(0);
+      expect(beforeAllowance).to.equal(0,"allowance of addr1");
 
       let approve = await pakoToken.approve(addr1.address,100);
       if (approve){
         let afterAllowance = await pakoToken.allowance(owner.address,addr1.address);
-        expect(afterAllowance).to.equal(100);
+        expect(afterAllowance).to.equal(100,"allowance of address1 after allow 100 token");
 
         let addr2BalanceBefore = await pakoToken.balanceOf(addr2.address);
-        expect(addr2BalanceBefore).to.equal(0);
+        expect(addr2BalanceBefore).to.equal(0,"balance of addr2 before transfer");
 
         const transferFrom = await pakoToken.connect(addr1).transferFrom(owner.address,addr2.address,30);
-        expect(await pakoToken.allowance(owner.address,addr1.address)).to.equal(70);
-        expect(await pakoToken.balanceOf(addr2.address)).to.equal(30);        
+        expect(await pakoToken.allowance(owner.address,addr1.address)).to.equal(70,"allowance of addr1 should decrease after transfer");
+        expect(await pakoToken.balanceOf(addr2.address)).to.equal(30,"balance of addr2 after transfer");        
         
         let decreaseAllowance = await pakoToken.decreaseAllowance(addr1.address,20);
-        expect(await pakoToken.allowance(owner.address,addr1.address)).to.equal(50);
+        expect(await pakoToken.allowance(owner.address,addr1.address)).to.equal(50,"again allowance of addr1 should decrease after decrease allowance");
       }
     });
-    it("Allowance Should be increased ",async ()=>{
+  });  
+    // it("Allowance Should be increased ",async ()=>{
+    //   const PakoToken = await ethers.getContractFactory("PakoToken");
+    //   const pakoToken = await PakoToken.deploy();
+    //   await pakoToken.deployed();
+      
+    //   let beforeAllowance = await pakoToken.allowance(owner.address,addr1.address);
+    //   expect(beforeAllowance).to.equal(0);
+
+    //   let approve = await pakoToken.approve(addr1.address,100);
+    //   if (approve){
+    //     let afterAllowance = await pakoToken.allowance(owner.address,addr1.address);
+    //     expect(afterAllowance).to.equal(100);
+
+    //     let addr2BalanceBefore = await pakoToken.balanceOf(addr2.address);
+    //     expect(addr2BalanceBefore).to.equal(0);
+
+    //     const transferFrom = await pakoToken.connect(addr1).transferFrom(owner.address,addr2.address,30);
+    //     expect(await pakoToken.allowance(owner.address,addr1.address)).to.equal(70);
+    //     expect(await pakoToken.balanceOf(addr2.address)).to.equal(30);        
+        
+    //     let increaseAllowance = await pakoToken.increaseAllowance(addr1.address,30);
+    //     expect(await pakoToken.allowance(owner.address,addr1.address)).to.equal(100);
+    //   }
+    // });
+  
+  // it("Should not have any pendingWithDrawals for owner", async function () {
+  //   [owner, addr1, addr2] = await ethers.getSigners();
+  //   // const cont = await new ERC20__factory(owner).deploy();
+  //   const PakoToken = await ethers.getContractFactory("PakoToken");
+  //   const pakoToken = await PakoToken.deploy();
+  //   await pakoToken.deployed();
+
+  //   const ownerPendingWithDrawals = await pakoToken.pendingWithDrawals(owner.address);
+  //   expect(ownerPendingWithDrawals.toString).to.equal((await ethers.provider.getBalance(owner.address)).toString);    
+  // });
+  describe("Buy Pako Token ", function () {
+    it("address1 will buy the token by sending 1ether", async function () {
+      let owner:any, addr1:any,addr2:any;
+      [owner, addr1, addr2] = await ethers.getSigners();
+      
       const PakoToken = await ethers.getContractFactory("PakoToken");
       const pakoToken = await PakoToken.deploy();
       await pakoToken.deployed();
       
-      let beforeAllowance = await pakoToken.allowance(owner.address,addr1.address);
-      expect(beforeAllowance).to.equal(0);
+      const ownerPendingWithDrawalsBefore = await pakoToken.pendingWithDrawals(owner.address);
+      expect(ownerPendingWithDrawalsBefore.toString()).to.equal((0).toString(),"pending ether should be 0");    
 
-      let approve = await pakoToken.approve(addr1.address,100);
-      if (approve){
-        let afterAllowance = await pakoToken.allowance(owner.address,addr1.address);
-        expect(afterAllowance).to.equal(100);
+      const etherBeforebuy = await ethers.provider.getBalance(addr1.address);
+      // expect(etherBeforebuy).not.equal("9997999693921206045209");
 
-        let addr2BalanceBefore = await pakoToken.balanceOf(addr2.address);
-        expect(addr2BalanceBefore).to.equal(0);
+      const beforeBalanceOfAddr1 = await pakoToken.balanceOf(addr1.address);
+      expect(beforeBalanceOfAddr1).to.equal(0);
+      const beforeBalanceOfOwner = await pakoToken.balanceOf(owner.address);
+      expect(beforeBalanceOfOwner).to.equal(await pakoToken.totalSupply());
+      const buy = await pakoToken.connect(addr1).buyToken({value:ethers.utils.parseEther("1")});
+      
 
-        const transferFrom = await pakoToken.connect(addr1).transferFrom(owner.address,addr2.address,30);
-        expect(await pakoToken.allowance(owner.address,addr1.address)).to.equal(70);
-        expect(await pakoToken.balanceOf(addr2.address)).to.equal(30);        
-        
-        let increaseAllowance = await pakoToken.increaseAllowance(addr1.address,30);
-        expect(await pakoToken.allowance(owner.address,addr1.address)).to.equal(100);
-      }
+      const ownerPendingWithDrawalsAfter = await pakoToken.pendingWithDrawals(owner.address);
+      expect(ownerPendingWithDrawalsAfter.toString()).to.equal((ethers.utils.parseEther("1")).toString());    
+      // console.log(buy);
+
+      const etherAfterbuy = await ethers.provider.getBalance(addr1.address);
+      expect(etherAfterbuy).not.equal(etherBeforebuy);
+      const afterBalanceOfAddr1 = await pakoToken.balanceOf(addr1.address);
+      expect( afterBalanceOfAddr1).to.equal(ethers.utils.parseUnits("100"))
+      const afterBalanceOfOwner = await pakoToken.balanceOf(owner.address);
+      const _owner = await pakoToken.owner();
+      expect( afterBalanceOfOwner).to.equal((await pakoToken.balanceOf(_owner)));
     });
-  });
-  it("Should not have any pendingWithDrawals for owner", async function () {
-    [owner, addr1, addr2] = await ethers.getSigners();
-    // const cont = await new ERC20__factory(owner).deploy();
-    const PakoToken = await ethers.getContractFactory("PakoToken");
-    const pakoToken = await PakoToken.deploy();
-    await pakoToken.deployed();
-
-    const ownerPendingWithDrawals = await pakoToken.pendingWithDrawals(owner.address);
-    expect(ownerPendingWithDrawals.toString).to.equal((await ethers.provider.getBalance(owner.address)).toString);    
-  });
-  it("address1 will buy the token by sending 1ether", async function () {
-    [owner, addr1, addr2] = await ethers.getSigners();
-    // const cont = await new ERC20__factory(owner).deploy();
-    const PakoToken = await ethers.getContractFactory("PakoToken");
-    const pakoToken = await PakoToken.deploy();
-    await pakoToken.deployed();
-    
-    const ownerPendingWithDrawalsBefore = await pakoToken.pendingWithDrawals(owner.address);
-    expect(ownerPendingWithDrawalsBefore.toString()).to.equal((0).toString());    
-
-    const etherBeforebuy = await ethers.provider.getBalance(addr1.address);
-    expect(etherBeforebuy.toString()).to.equal("9997999693921206045209");
-
-    const beforeBalanceOfAddr1 = await pakoToken.balanceOf(addr1.address);
-    expect(beforeBalanceOfAddr1).to.equal(0);
-    const beforeBalanceOfOwner = await pakoToken.balanceOf(owner.address);
-    expect(beforeBalanceOfOwner).to.equal(await pakoToken.totalSupply());
-    const buy = await pakoToken.connect(addr1).buyToken({value:ethers.utils.parseEther("1")});
-
-    const ownerPendingWithDrawalsAfter = await pakoToken.pendingWithDrawals(owner.address);
-    expect(ownerPendingWithDrawalsAfter.toString()).to.equal((ethers.utils.parseEther("1")).toString());    
-    // console.log(buy);
-
-    const etherAfterbuy = await ethers.provider.getBalance(addr1.address);
-    expect(etherAfterbuy.toString).to.equal(ethers.utils.parseEther("9999").toString);
-    const afterBalanceOfAddr1 = await pakoToken.balanceOf(addr1.address);
-    // expect( afterBalanceOfAddr1.toString()).to.equal((100000000000000000000).toString());
-    const afterBalanceOfOwner = await pakoToken.balanceOf(owner.address);
-    const _owner = await pakoToken.owner();
-    expect( afterBalanceOfOwner.toString()).to.equal((await pakoToken.balanceOf(_owner)).toString());
-  });
-  
+  })
   
   it("owner should mint the token", async function () {
+    let owner:any, addr1:any,addr2:any;
     [owner, addr1, addr2] = await ethers.getSigners();
     
     const PakoToken = await ethers.getContractFactory("PakoToken");
@@ -273,15 +266,15 @@ describe("Pako token", function () {
     const totalSupply = await pakoToken.totalSupply();
     expect(totalSupply).to.equal(await pakoToken._initialSupply())
 
-    await pakoToken.generateToken(owner.address,100);
-    
-    // expect((await pakoToken.totalSupply()).toString()).to.equal((await pakoToken.balanceOf(owner.address)).toString());
+    await pakoToken.generateToken(owner.address,100);        
     
     const afterBalanceOfOwner = await pakoToken.balanceOf(owner.address);
-    const _owner = await pakoToken.owner();
-    expect( afterBalanceOfOwner.toString()).to.equal(await pakoToken.totalSupply());
+    
+    expect( afterBalanceOfOwner).not.equal(await pakoToken._initialSupply());
+    
   }); 
-  it("owner will burn the Token and total Supply will decrease", async function () {
+  it("owner will burn the Tokens and total Supply will decrease", async function () {
+    let owner:any, addr1:any,addr2:any;
     [owner, addr1, addr2] = await ethers.getSigners();
     
     const PakoToken = await ethers.getContractFactory("PakoToken");
@@ -298,9 +291,10 @@ describe("Pako token", function () {
     
     const afterBalanceOfOwner = await pakoToken.balanceOf(owner.address);
     const _owner = await pakoToken.owner();
-    expect( afterBalanceOfOwner.toString()).to.equal(await pakoToken.totalSupply());
+    expect( afterBalanceOfOwner).not.equal(await pakoToken._initialSupply());
   }); 
   it("Transfer ownership from owner to address1", async function () {
+    let owner:any, addr1:any,addr2:any;
     [owner, addr1, addr2] = await ethers.getSigners();
     
     const PakoToken = await ethers.getContractFactory("PakoToken");
@@ -314,6 +308,7 @@ describe("Pako token", function () {
     expect(await pakoToken.owner()).to.equal(addr1.address);
   }); 
   it("RenounceOwnership", async function () {
+    let owner:any, addr1:any,addr2:any;
     [owner, addr1, addr2] = await ethers.getSigners();
     
     const PakoToken = await ethers.getContractFactory("PakoToken");
@@ -327,6 +322,7 @@ describe("Pako token", function () {
     expect(await pakoToken.owner()).to.equal("0x0000000000000000000000000000000000000000");
   }); 
   it("address1 will buy the token by sending 1ether", async function () {
+    let owner:any, addr1:any,addr2:any;
     [owner, addr1, addr2] = await ethers.getSigners();
     // const cont = await new ERC20__factory(owner).deploy();
     const PakoToken = await ethers.getContractFactory("PakoToken");
@@ -353,7 +349,7 @@ describe("Pako token", function () {
   });
 });
 
-describe("pakora", function(){
+describe("Check With Draw", function(){
   let owner:any, addr1:any,addr2:any, PakoToken, pakoToken;
   it("owner should recieve the ether from pendingWithDrawals", async function () {
     [owner, addr1, addr2] = await ethers.getSigners();
@@ -387,7 +383,6 @@ describe("pakora", function(){
     expect(ownerPendingAfterWithDraw.toString()).to.equal((0).toString()); 
     //check the owner ether balance after withdraw
     const etherAfterWithDraw = await ethers.provider.getBalance(owner.address);
-    expect(etherAfterWithDraw).to.equal("10001916028468681479766");
-   
+    expect(etherAfterWithDraw).not.equal(etherBeforebuy);   
   }); 
 })

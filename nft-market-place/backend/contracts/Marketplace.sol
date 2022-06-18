@@ -75,6 +75,7 @@ contract Marketplace is ReentrancyGuard {
     }
 
     function purchaseItem(uint _itemId) external payable nonReentrant {
+        require(items[_itemId].seller != msg.sender ,"owner can't buy it own propert");// haven't compile yet
         uint _totalPrice = getTotalPrice(_itemId);
         Item storage item = items[_itemId];
         require(_itemId > 0 && _itemId <= itemCount, "item doesn't exist");

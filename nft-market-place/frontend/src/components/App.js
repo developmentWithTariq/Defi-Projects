@@ -59,7 +59,7 @@ function App() {
         </>
         <div>
           {loading ? (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '180vh' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
               <Spinner animation="border" style={{ display: 'flex', color: 'White'}} />
               <p className='mx-3 my-0 ' style={ {color: 'White',fontWeight:'bold' ,fontFamily:'Poppins, sans-serif' }}>Awaiting Metamask Connection...</p>
             </div>
